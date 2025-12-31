@@ -22,7 +22,7 @@ export default async function ContactPage() {
                     <p className="text-gray-400">Manage and interact with your relationships.</p>
                 </div>
                 <div className="flex gap-4">
-                    <button className="premium-btn">Add Contact</button>
+                    <a href="/contacts/new" className="premium-btn">Add Contact</a>
                     <button className="px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-all">Export</button>
                 </div>
             </div>

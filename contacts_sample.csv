@@ -1,0 +1,5 @@
+name,email,phone,tags
+Alice Johnson,alice@example.com,+15550101,"vip, client"
+Bob Smith,bob@test.com,+15550202,"lead"
+Charlie Brown,charlie@domain.org,, "newsletter, new"
+David Lee,david@demo.net,+15550303,

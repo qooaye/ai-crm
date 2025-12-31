@@ -13,6 +13,8 @@ export async function POST(request: Request) {
             const records = parse(content, {
                 columns: true,
                 skip_empty_lines: true,
+                trim: true,
+                relax_quotes: true,
             });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             contacts = records.map((r: any) => ({
