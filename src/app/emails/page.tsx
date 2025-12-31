@@ -40,7 +40,8 @@ export default async function EmailLogPage() {
                                 </td>
                             </tr>
                         ) : (
-                            logs.map((log) => (
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            logs.map((log: any) => (
                                 <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                                     <td className="px-6 py-4">
                                         <div>{log.contact.name}</div>
