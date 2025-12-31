@@ -35,7 +35,7 @@ export default function ImportPage() {
                 } else {
                     throw new Error("Failed to import contacts");
                 }
-            } catch (error) {
+            } catch {
                 setStatus("error");
                 setMessage("An error occurred during import.");
             }
@@ -68,8 +68,8 @@ export default function ImportPage() {
 
                 {status !== "idle" && (
                     <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${status === "loading" ? "bg-blue-500/10 text-blue-400" :
-                            status === "success" ? "bg-green-500/10 text-green-400" :
-                                "bg-red-500/10 text-red-400"
+                        status === "success" ? "bg-green-500/10 text-green-400" :
+                            "bg-red-500/10 text-red-400"
                         }`}>
                         <span>{message}</span>
                     </div>

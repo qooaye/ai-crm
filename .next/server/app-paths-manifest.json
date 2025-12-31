@@ -1,0 +1,9 @@
+{
+  "/api/import/route": "app/api/import/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/emails/route": "app/api/emails/route.js",
+  "/emails/new/page": "app/emails/new/page.js",
+  "/emails/page": "app/emails/page.js",
+  "/import/page": "app/import/page.js",
+  "/contacts/page": "app/contacts/page.js"
+}

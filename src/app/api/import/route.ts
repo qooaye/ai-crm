@@ -6,6 +6,7 @@ export async function POST(request: Request) {
     try {
         const { content, type } = await request.json();
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let contacts: any[] = [];
 
         if (type === "csv") {
@@ -13,6 +14,7 @@ export async function POST(request: Request) {
                 columns: true,
                 skip_empty_lines: true,
             });
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             contacts = records.map((r: any) => ({
                 name: r.name || r.Name || "",
                 email: r.email || r.Email || "",
@@ -24,6 +26,7 @@ export async function POST(request: Request) {
         }
 
         // Upsert contacts
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const operations = contacts.map((c: any) =>
             prisma.contact.upsert({
                 where: { email: c.email },

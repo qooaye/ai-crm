@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function ComposeEmailPage() {
@@ -26,7 +26,7 @@ export default function ComposeEmailPage() {
             } else {
                 throw new Error("Failed to send email");
             }
-        } catch (error) {
+        } catch {
             setStatus("error");
         }
     };
