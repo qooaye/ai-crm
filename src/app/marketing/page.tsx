@@ -160,8 +160,11 @@ export default function MarketingPage() {
                         </div>
                     </div>
 
-                    <button className="premium-btn w-full justify-center mt-4">
-                        {scheduledTime ? "Schedule Campaign" : "Send Campaign Now"}
+                    <button
+                        className="premium-btn w-full justify-center mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={status === "sending"}
+                    >
+                        {status === "sending" ? "Sending..." : (scheduledTime ? "Schedule Campaign" : "Send Campaign Now")}
                     </button>
                 </div>
             </div>
