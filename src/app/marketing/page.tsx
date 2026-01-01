@@ -8,9 +8,10 @@ export default function MarketingPage() {
     const [contacts, setContacts] = useState<any[]>([]);
     const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
 
-    // Unused state commented out for linting
-    // const [templates, setTemplates] = useState<any[]>([]);
-    // const [selectedTemplateId, setSelectedTemplateId] = useState("");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [templates, setTemplates] = useState<any[]>([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [selectedTemplateId, setSelectedTemplateId] = useState("");
 
     const [newTemplateName, setNewTemplateName] = useState("");
     const [templateSubject, setTemplateSubject] = useState("");
@@ -23,7 +24,7 @@ export default function MarketingPage() {
     // Fetch contacts and templates on load
     useEffect(() => {
         fetchContacts();
-        // fetchTemplates();
+        fetchTemplates();
     }, []);
 
     const fetchContacts = async () => {
@@ -33,11 +34,12 @@ export default function MarketingPage() {
         } catch (e) { console.error("Failed to load contacts", e); }
     };
 
-    /*
     const fetchTemplates = async () => {
-         // Placeholder for when we have the API
+        try {
+            const data = await (await fetch("/api/templates")).json();
+            setTemplates(data);
+        } catch (e) { console.error("Failed to load templates", e); }
     };
-    */
 
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -51,6 +53,66 @@ export default function MarketingPage() {
         setSelectedContactIds(prev =>
             prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
         );
+    };
+
+    const handleTemplateSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const id = e.target.value;
+        setSelectedTemplateId(id);
+        if (id === "new") {
+            setTemplateSubject("");
+            setTemplateBody("");
+            setNewTemplateName("");
+        } else {
+            const temp = templates.find(t => t.id === id);
+            if (temp) {
+                setTemplateSubject(temp.subject);
+                setTemplateBody(temp.body);
+                setNewTemplateName(temp.name);
+            }
+        }
+    };
+
+    const handleSaveTemplate = async () => {
+        if (!newTemplateName || !templateSubject || !templateBody) return alert("Please fill all fields");
+        try {
+            const res = await fetch("/api/templates", {
+                method: "POST",
+                body: JSON.stringify({ name: newTemplateName, subject: templateSubject, body: templateBody })
+            });
+            if (res.ok) {
+                alert("Template saved!");
+                fetchTemplates();
+            }
+        } catch { alert("Failed to save"); }
+    };
+
+    const handleSendCampaign = async () => {
+        if (selectedContactIds.length === 0) return alert("Select at least one contact");
+        if (!templateSubject || !templateBody) return alert("Subject and Body required");
+
+        setStatus("sending");
+        try {
+            const res = await fetch("/api/campaigns", {
+                method: "POST",
+                body: JSON.stringify({
+                    recipientIds: selectedContactIds,
+                    subject: templateSubject,
+                    body: templateBody,
+                    scheduledAt: scheduledTime || null,
+                    templateName: newTemplateName || "Quick Send"
+                })
+            });
+            if (res.ok) {
+                alert(scheduledTime ? "Campaign Scheduled!" : "Emails Sent Successfully!");
+                setStatus("success");
+            } else {
+                throw new Error("Failed");
+            }
+        } catch {
+            alert("Failed to send campaign");
+            setStatus("error");
+        }
+        setStatus("idle");
     };
 
     const handleSendTest = async () => {
@@ -115,9 +177,13 @@ export default function MarketingPage() {
 
                     <div>
                         <label className="block text-xs text-gray-400 mb-1">Load Template</label>
-                        <select className="input-field" onChange={(e) => console.log("Load template", e.target.value)}>
+                        <select className="input-field" onChange={handleTemplateSelect}>
                             <option value="">Select a template...</option>
                             <option value="new">+ Create New</option>
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            {templates.map((t: any) => (
+                                <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -130,7 +196,7 @@ export default function MarketingPage() {
                             value={newTemplateName}
                             onChange={(e) => setNewTemplateName(e.target.value)}
                         />
-                        <button className="text-xs text-primary mt-1 hover:underline">+ Save current draft</button>
+                        <button onClick={handleSaveTemplate} className="text-xs text-primary mt-1 hover:underline">+ Save current draft</button>
                     </div>
 
                     <div>
@@ -161,6 +227,7 @@ export default function MarketingPage() {
                     </div>
 
                     <button
+                        onClick={handleSendCampaign}
                         className="premium-btn w-full justify-center mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={status === "sending"}
                     >
