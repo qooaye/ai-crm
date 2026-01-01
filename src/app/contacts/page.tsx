@@ -1,5 +1,7 @@
 import prisma from "../../lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 async function getContacts() {
     try {
         return await prisma.contact.findMany({
@@ -23,7 +25,7 @@ export default async function ContactPage() {
                 </div>
                 <div className="flex gap-4">
                     <a href="/contacts/new" className="premium-btn">Add Contact</a>
-                    <button className="px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-all">Export</button>
+                    <a href="/api/export" target="_blank" className="px-4 py-2 border border-white/10 rounded-lg hover:bg-white/5 transition-all block">Export</a>
                 </div>
             </div>
 
