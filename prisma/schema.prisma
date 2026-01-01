@@ -17,6 +17,7 @@ model Contact {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   emails    EmailLog[]
+  campaigns EmailCampaign[]
 }
 
 model EmailLog {
@@ -46,6 +47,7 @@ model EmailCampaign {
   templateId  String
   scheduledAt DateTime?
   status      CampaignStatus @default(DRAFT)
+  contacts    Contact[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 }

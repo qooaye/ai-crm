@@ -56,7 +56,10 @@ export async function POST(request: Request) {
                 name: name || subject || "Untitled Campaign",
                 templateId,
                 scheduledAt: scheduledAt ? new Date(scheduledAt) : null,
-                status: scheduledAt ? "SCHEDULED" : "DRAFT"
+                status: scheduledAt ? "SCHEDULED" : "DRAFT",
+                contacts: {
+                    connect: recipientIds.map((id: string) => ({ id }))
+                }
             }
         });
 
