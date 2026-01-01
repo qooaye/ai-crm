@@ -49,20 +49,34 @@ export async function GET() {
             const campaignResults = await Promise.allSettled(campaign.contacts.map(async (contact: any) => {
                 const personalizedBody = body.replace(/{name}/g, contact.name);
 
-                await resend.emails.send({
-                    from: 'AI CRM <onboarding@resend.dev>',
-                    to: contact.email,
-                    subject: subject,
-                    text: personalizedBody
-                });
+                try {
+                    const { error } = await resend.emails.send({
+                        from: 'AI CRM <onboarding@resend.dev>',
+                        to: contact.email,
+                        subject: subject,
+                        text: personalizedBody
+                    });
 
-                await prisma.emailLog.create({
-                    data: {
-                        subject,
-                        body: personalizedBody,
-                        contactId: contact.id
-                    }
-                });
+                    if (error) throw new Error(error.message);
+
+                    await prisma.emailLog.create({
+                        data: {
+                            subject: subject,
+                            body: personalizedBody,
+                            contactId: contact.id
+                        }
+                    });
+                } catch (err: any) {
+                    // Log failure
+                    console.error("Email send failed:", err);
+                    await prisma.emailLog.create({
+                        data: {
+                            subject: `[FAILED] ${subject}`,
+                            body: `Error sending email: ${err.message || err}`,
+                            contactId: contact.id
+                        }
+                    });
+                }
             }));
 
             await prisma.emailCampaign.update({
