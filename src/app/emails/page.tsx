@@ -17,9 +17,12 @@ export default async function EmailLogPage() {
 
     return (
         <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2">Email Logs</h1>
-                <p className="text-gray-400">History of all sent communications.</p>
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 className="text-3xl font-bold mb-2">Email Logs</h1>
+                    <p className="text-gray-400">History of all sent communications.</p>
+                </div>
+                <a href="/marketing" className="premium-btn">Compose New Email</a>
             </div>
 
             <div className="glass overflow-hidden">

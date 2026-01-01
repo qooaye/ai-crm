@@ -37,7 +37,6 @@ export default async function ContactPage() {
                             <th className="px-6 py-4 font-medium">Email</th>
                             <th className="px-6 py-4 font-medium">Phone</th>
                             <th className="px-6 py-4 font-medium">Tags</th>
-                            <th className="px-6 py-4 font-medium">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,9 +60,6 @@ export default async function ContactPage() {
                                                 <span key={tag} className="px-2 py-1 bg-primary/20 text-primary text-xs rounded-full">{tag}</span>
                                             ))}
                                         </div>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <button className="text-primary hover:underline">View</button>
                                     </td>
                                 </tr>
                             ))
