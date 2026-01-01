@@ -33,7 +33,7 @@ export default function NewContactPage() {
                 const data = await response.json();
                 throw new Error(data.error || "Failed to create contact");
             }
-        } catch (err: any) {
+        } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
             setStatus("error");
             setErrorMsg(err.message);
         }
