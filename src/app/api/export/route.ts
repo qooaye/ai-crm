@@ -10,6 +10,7 @@ export async function GET() {
         });
 
         const csvHeader = "name,email,phone,tags\n";
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const csvRows = contacts.map((c: any) => {
             const tags = c.tags ? `"${c.tags.join(',')}"` : "";
             return `${c.name},${c.email},${c.phone || ""},${tags}`;
