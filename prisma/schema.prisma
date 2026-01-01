@@ -27,3 +27,32 @@ model EmailLog {
   contact   Contact  @relation(fields: [contactId], references: [id])
   contactId String
 }
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  subject   String
+  body      String
+  variables String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  campaigns EmailCampaign[]
+}
+
+model EmailCampaign {
+  id          String        @id @default(cuid())
+  name        String
+  template    EmailTemplate @relation(fields: [templateId], references: [id])
+  templateId  String
+  scheduledAt DateTime?
+  status      CampaignStatus @default(DRAFT)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+enum CampaignStatus {
+  DRAFT
+  SCHEDULED
+  SENT
+  FAILED
+}

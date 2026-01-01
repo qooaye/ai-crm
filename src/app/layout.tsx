@@ -24,6 +24,7 @@ export default function RootLayout({
                     <div className="flex gap-6">
                         <a href="/contacts" className="hover:text-primary transition-colors">Contacts</a>
                         <a href="/emails" className="hover:text-primary transition-colors">Emails</a>
+                        <a href="/marketing" className="hover:text-primary transition-colors">Marketing</a>
                         <a href="/import" className="hover:text-primary transition-colors">Import</a>
                     </div>
                     <div className="flex items-center gap-4">
