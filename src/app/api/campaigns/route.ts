@@ -4,6 +4,23 @@ import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+export async function GET() {
+    try {
+        const campaigns = await prisma.emailCampaign.findMany({
+            orderBy: { createdAt: 'desc' },
+            take: 10,
+            include: {
+                _count: {
+                    select: { contacts: true }
+                }
+            }
+        });
+        return NextResponse.json(campaigns);
+    } catch {
+        return NextResponse.json({ error: "Failed to fetch campaigns" }, { status: 500 });
+    }
+}
+
 export async function POST(request: Request) {
     try {
         const {

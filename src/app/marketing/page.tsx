@@ -21,11 +21,25 @@ export default function MarketingPage() {
     const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
     // const [message, setMessage] = useState("");
 
-    // Fetch contacts and templates on load
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [campaignsList, setCampaignsList] = useState<any[]>([]);
+
+    // Fetch contacts, templates, and campaigns on load
     useEffect(() => {
         fetchContacts();
         fetchTemplates();
+        fetchCampaigns();
     }, []);
+
+    const fetchCampaigns = async () => {
+        try {
+            const res = await fetch("/api/campaigns");
+            if (res.ok) {
+                const data = await res.json();
+                setCampaignsList(Array.isArray(data) ? data : []);
+            }
+        } catch (e) { console.error("Failed to load campaigns", e); }
+    };
 
     const fetchContacts = async () => {
         try {
@@ -115,6 +129,7 @@ export default function MarketingPage() {
             if (res.ok) {
                 alert(scheduledTime ? "Campaign Scheduled!" : "Emails Sent Successfully!");
                 setStatus("success");
+                fetchCampaigns();
             } else {
                 throw new Error("Failed");
             }
@@ -243,6 +258,31 @@ export default function MarketingPage() {
                     >
                         {status === "sending" ? "Sending..." : (scheduledTime ? "Schedule Campaign" : "Send Campaign Now")}
                     </button>
+
+                    {/* Campaign Queue / History */}
+                    <div className="pt-6 border-t border-white/10 mt-6">
+                        <h4 className="font-bold text-sm mb-3">Recent Campaigns</h4>
+                        <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                            {campaignsList.map((c: any) => (
+                                <div key={c.id} className="glass p-2 rounded text-xs">
+                                    <div className="flex justify-between font-bold">
+                                        <span>{c.name}</span>
+                                        <span className={`
+                                            ${c.status === 'SENT' ? 'text-green-400' : ''}
+                                            ${c.status === 'SCHEDULED' ? 'text-blue-400' : ''}
+                                            ${c.status === 'DRAFT' ? 'text-gray-400' : ''}
+                                        `}>{c.status}</span>
+                                    </div>
+                                    <div className="flex justify-between text-gray-400 mt-1">
+                                        <span>{c._count?.contacts || 0} Recipients</span>
+                                        <span>{c.scheduledAt ? new Date(c.scheduledAt).toLocaleString() : 'Immediate'}</span>
+                                    </div>
+                                </div>
+                            ))}
+                            {campaignsList.length === 0 && <p className="text-gray-500 text-xs text-center">No campaigns found.</p>}
+                        </div>
+                    </div>
                 </div>
             </div>
 
