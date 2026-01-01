@@ -29,16 +29,26 @@ export default function MarketingPage() {
 
     const fetchContacts = async () => {
         try {
-            const data = await (await fetch("/api/contacts/list")).json();
-            setContacts(data);
-        } catch (e) { console.error("Failed to load contacts", e); }
+            const res = await fetch("/api/contacts/list");
+            if (!res.ok) throw new Error("Failed to fetch");
+            const data = await res.json();
+            setContacts(Array.isArray(data) ? data : []);
+        } catch (e) {
+            console.error("Failed to load contacts", e);
+            setContacts([]);
+        }
     };
 
     const fetchTemplates = async () => {
         try {
-            const data = await (await fetch("/api/templates")).json();
-            setTemplates(data);
-        } catch (e) { console.error("Failed to load templates", e); }
+            const res = await fetch("/api/templates");
+            if (!res.ok) throw new Error("Failed to fetch");
+            const data = await res.json();
+            setTemplates(Array.isArray(data) ? data : []);
+        } catch (e) {
+            console.error("Failed to load templates", e);
+            setTemplates([]);
+        }
     };
 
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
