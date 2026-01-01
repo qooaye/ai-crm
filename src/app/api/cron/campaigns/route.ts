@@ -66,13 +66,14 @@ export async function GET() {
                             contactId: contact.id
                         }
                     });
-                } catch (err: any) {
+                } catch (err: unknown) {
                     // Log failure
                     console.error("Email send failed:", err);
+                    const errorMessage = err instanceof Error ? err.message : String(err);
                     await prisma.emailLog.create({
                         data: {
                             subject: `[FAILED] ${subject}`,
-                            body: `Error sending email: ${err.message || err}`,
+                            body: `Error sending email: ${errorMessage}`,
                             contactId: contact.id
                         }
                     });
