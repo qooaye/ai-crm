@@ -68,6 +68,7 @@ export async function POST(request: Request) {
             });
 
             // Iterate and Send (Basic Batching)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const results = await Promise.allSettled(contacts.map(async (contact: any) => {
                 const personalizedBody = body.replace(/{name}/g, contact.name);
 

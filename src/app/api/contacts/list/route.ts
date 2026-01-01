@@ -10,7 +10,7 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         });
         return NextResponse.json(contacts);
-    } catch (error) {
+    } catch {
         return NextResponse.json({ error: "Failed to fetch contacts" }, { status: 500 });
     }
 }

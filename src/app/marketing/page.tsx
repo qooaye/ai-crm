@@ -1,44 +1,43 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import ReactMarkdown from "react-markdown";
+// import ReactMarkdown from "react-markdown"; // Unused for now
 
 export default function MarketingPage() {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [contacts, setContacts] = useState<any[]>([]);
     const [selectedContactIds, setSelectedContactIds] = useState<string[]>([]);
-    const [templates, setTemplates] = useState<any[]>([]);
-    const [selectedTemplateId, setSelectedTemplateId] = useState("");
+
+    // Unused state commented out for linting
+    // const [templates, setTemplates] = useState<any[]>([]);
+    // const [selectedTemplateId, setSelectedTemplateId] = useState("");
+
     const [newTemplateName, setNewTemplateName] = useState("");
     const [templateSubject, setTemplateSubject] = useState("");
     const [templateBody, setTemplateBody] = useState("");
     const [scheduledTime, setScheduledTime] = useState("");
     const [testEmail, setTestEmail] = useState("");
     const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
-    const [message, setMessage] = useState("");
+    // const [message, setMessage] = useState("");
 
     // Fetch contacts and templates on load
     useEffect(() => {
         fetchContacts();
-        fetchTemplates();
+        // fetchTemplates();
     }, []);
 
     const fetchContacts = async () => {
         try {
-            const res = await fetch("/api/contacts"); // Reuse existing API? or we might need one that returns JSON
-            // Since /api/contacts is POST only or returns HTML if it was the page... wait.
-            // Actually /api/contacts was created as POST only? No, I need a GET endpoint.
-            // Wait, src/app/contacts/page.tsx fetches directly from DB.
-            // I should create a GET endpoint for contacts widely or just use a server action.
-            // For now let's assume I'll add GET to /api/contacts or creating a specific one.
-            // Let's create /api/contacts/list for JSON data.
             const data = await (await fetch("/api/contacts/list")).json();
             setContacts(data);
         } catch (e) { console.error("Failed to load contacts", e); }
     };
 
+    /*
     const fetchTemplates = async () => {
-        // Placeholder for when we have the API
+         // Placeholder for when we have the API
     };
+    */
 
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -69,7 +68,7 @@ export default function MarketingPage() {
             if (res.ok) alert("Test email sent!");
             else throw new Error("Failed");
             setStatus("idle");
-        } catch (e) {
+        } catch {
             alert("Failed to send test email");
             setStatus("idle");
         }
