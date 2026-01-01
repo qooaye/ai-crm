@@ -23,7 +23,11 @@ export async function GET() {
         });
 
         if (dueCampaigns.length === 0) {
-            return NextResponse.json({ message: "No due campaigns found" });
+            return NextResponse.json({
+                message: "No due campaigns found",
+                serverTime: new Date().toISOString(),
+                debug: "Check if your 'scheduledAt' is in the past relative to serverTime."
+            });
         }
 
         const results = [];

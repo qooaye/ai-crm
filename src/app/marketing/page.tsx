@@ -108,7 +108,7 @@ export default function MarketingPage() {
                     recipientIds: selectedContactIds,
                     subject: templateSubject,
                     body: templateBody,
-                    scheduledAt: scheduledTime || null,
+                    scheduledAt: scheduledTime ? new Date(scheduledTime).toISOString() : null,
                     templateName: newTemplateName || "Quick Send"
                 })
             });
