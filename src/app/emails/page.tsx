@@ -1,5 +1,7 @@
 import prisma from "../../lib/prisma";
 
+export const dynamic = "force-dynamic";
+
 async function getEmailLogs() {
     try {
         return await prisma.emailLog.findMany({
