@@ -270,7 +270,8 @@ export default function MarketingPage() {
                                         const data = await res.json();
                                         alert("Debug Result:\n" + JSON.stringify(data.debug, null, 2));
                                         fetchCampaigns();
-                                    } catch (e) { alert("Trigger failed"); }
+                                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    } catch (e: any) { alert("Trigger failed: " + e.message); }
                                 }}
                                 className="text-[10px] bg-white/10 hover:bg-white/20 px-2 py-1 rounded text-gray-300"
                             >
