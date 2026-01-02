@@ -8,6 +8,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function GET() {
     try {
+        console.log("[CRON] Starting campaign check...");
         const now = new Date();
 
         // 1. Fetch ALL scheduled campaigns to debug why they aren't matching
@@ -15,6 +16,8 @@ export async function GET() {
             where: { status: "SCHEDULED" },
             include: { contacts: true, template: true }
         });
+
+        console.log(`[CRON] Found ${allScheduled.length} scheduled campaigns.`);
 
         const debugLog = {
             serverTime: now.toISOString(),
@@ -31,8 +34,10 @@ export async function GET() {
 
         // 2. Filter for actual processing
         const dueCampaigns = allScheduled.filter(c => c.scheduledAt && c.scheduledAt <= now && c.contacts.length > 0);
+        console.log(`[CRON] Processing ${dueCampaigns.length} due campaigns.`);
 
         if (dueCampaigns.length === 0) {
+            console.log("[CRON] No due campaigns to process.");
             return NextResponse.json({
                 message: "No due campaigns processed",
                 debug: debugLog

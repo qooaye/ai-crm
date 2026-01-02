@@ -261,7 +261,22 @@ export default function MarketingPage() {
 
                     {/* Campaign Queue / History */}
                     <div className="pt-6 border-t border-white/10 mt-6">
-                        <h4 className="font-bold text-sm mb-3">Recent Campaigns</h4>
+                        <div className="flex justify-between items-center mb-3">
+                            <h4 className="font-bold text-sm">Recent Campaigns</h4>
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        const res = await fetch("/api/cron/campaigns");
+                                        const data = await res.json();
+                                        alert("Debug Result:\n" + JSON.stringify(data.debug, null, 2));
+                                        fetchCampaigns();
+                                    } catch (e) { alert("Trigger failed"); }
+                                }}
+                                className="text-[10px] bg-white/10 hover:bg-white/20 px-2 py-1 rounded text-gray-300"
+                            >
+                                ⚡ Force Check
+                            </button>
+                        </div>
                         <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
                             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                             {campaignsList.map((c: any) => (
