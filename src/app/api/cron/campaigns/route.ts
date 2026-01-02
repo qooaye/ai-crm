@@ -51,10 +51,14 @@ export async function GET() {
             const { subject, body } = campaign.template;
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const campaignResults = await Promise.allSettled(campaign.contacts.map(async (contact: any) => {
+            let successCount = 0;
+            for (const contact of campaign.contacts) {
                 const personalizedBody = body.replace(/{name}/g, contact.name);
 
                 try {
+                    // Rate Limit: Wait 1 second between emails to respect Resend's 2 req/sec limit
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
                     const { error } = await resend.emails.send({
                         from: 'AI CRM <onboarding@resend.dev>',
                         to: contact.email,
@@ -71,6 +75,7 @@ export async function GET() {
                             contactId: contact.id
                         }
                     });
+                    successCount++;
                 } catch (err: unknown) {
                     // Log failure
                     console.error("Email send failed:", err);
@@ -83,7 +88,7 @@ export async function GET() {
                         }
                     });
                 }
-            }));
+            }
 
             await prisma.emailCampaign.update({
                 where: { id: campaign.id },
@@ -92,7 +97,7 @@ export async function GET() {
 
             results.push({
                 campaign: campaign.name,
-                processed: campaignResults.length
+                processed: successCount
             });
         }
 
