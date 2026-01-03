@@ -29,6 +29,32 @@ export default function MarketingPage() {
         fetchContacts();
         fetchTemplates();
         fetchCampaigns();
+
+        // 自動輪詢：每 60 秒檢查一次排程
+        const checkScheduledCampaigns = async () => {
+            try {
+                const res = await fetch("/api/cron/campaigns");
+                if (res.ok) {
+                    const data = await res.json();
+                    // 如果有處理到 campaign，更新列表
+                    if (data.processed && data.processed.length > 0) {
+                        console.log("[Auto-Check] Processed campaigns:", data.processed);
+                        fetchCampaigns();
+                    }
+                }
+            } catch (e) {
+                console.error("[Auto-Check] Failed:", e);
+            }
+        };
+
+        // 每 60 秒執行一次
+        const intervalId = setInterval(checkScheduledCampaigns, 60 * 1000);
+        
+        // 頁面載入時也立即檢查一次
+        checkScheduledCampaigns();
+
+        // 清理 interval
+        return () => clearInterval(intervalId);
     }, []);
 
     const fetchCampaigns = async () => {
@@ -262,13 +288,20 @@ export default function MarketingPage() {
                     {/* Campaign Queue / History */}
                     <div className="pt-6 border-t border-white/10 mt-6">
                         <div className="flex justify-between items-center mb-3">
-                            <h4 className="font-bold text-sm">Recent Campaigns</h4>
+                            <div>
+                                <h4 className="font-bold text-sm">Recent Campaigns</h4>
+                                <p className="text-[10px] text-gray-500">🔄 Auto-check every 60s</p>
+                            </div>
                             <button
                                 onClick={async () => {
                                     try {
                                         const res = await fetch("/api/cron/campaigns");
                                         const data = await res.json();
-                                        alert("Debug Result:\n" + JSON.stringify(data.debug, null, 2));
+                                        // 顯示完整結果，包含 processed 和 debug
+                                        const resultText = data.processed 
+                                            ? `✅ Processed:\n${JSON.stringify(data.processed, null, 2)}\n\n📊 Debug:\n${JSON.stringify(data.debug, null, 2)}`
+                                            : `📊 Debug Result:\n${JSON.stringify(data, null, 2)}`;
+                                        alert(resultText);
                                         fetchCampaigns();
                                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                     } catch (e: any) { alert("Trigger failed: " + e.message); }
