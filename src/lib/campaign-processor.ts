@@ -3,6 +3,7 @@ import prisma from "./prisma";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function processCampaign(campaign: any) {
     const { subject, body } = campaign.template;
     let successCount = 0;
